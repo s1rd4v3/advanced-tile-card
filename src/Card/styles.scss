@@ -1,0 +1,216 @@
+* {
+  box-sizing: border-box;
+}
+ha-card {
+  /*** 
+  * Variables START
+  ***/
+
+  // Defaults defined by HA
+  --atc-default-card-background: var(--ha-card-background, var(--card-background-color, white));
+  --atc-default-icon-color: rgb(var(--rgb-state-inactive-color));
+  --atc-default-icon-color-active: rgb(var(--rgb-state-switch-color));
+  --atc-default-icon-background: rgba(var(--rgb-state-inactive-color), 0.2);
+  --atc-default-icon-background-active: rgba(var(--rgb-state-switch-color), 0.2);
+  --atc-default-card-border-radius: var(--ha-card-border-radius, 12px);
+
+  // Sizes variables
+  --atc-card-spacing: 1.5vw;
+  --atc-card-border-radius: var(--atc-theme-card-border-radius, var(--atc-default-card-border-radius));
+  
+  // Card background variables
+  --atc-card-background: var(--atc-theme-card-background, var(--atc-default-card-background));
+  --atc-card-background-active: var(--atc-theme-card-background-active, var(--atc-default-card-background));
+
+  --atc-card-background-mask: linear-gradient(0deg, transparent 0%, black 100%);
+
+  // Card Icon variables
+  --atc-icon-color: var(--atc-theme-icon-color, var(--atc-default-icon-color));
+  --atc-icon-color-active: var(--atc-theme-icon-color-active, var(--atc-default-icon-color-active));
+
+  --atc-icon-background: var(--atc-theme-icon-background, var(--atc-default-icon-background));
+  --atc-icon-background-active: var(--atc-theme-icon-background-active, var(--atc-default-icon-background-active));
+
+  // --atc-icon-border: var(--atc-theme-icon-border, 0);
+  // --atc-icon-border-active: var(--atc-theme-icon-border-active, 0);
+
+  // Card text variables
+  --atc-text-color: var(--primary-text-color);
+  --atc-text-color-active: var(--primary-text-color-active);
+  
+  /*** 
+  * Variables END
+  ***/
+
+
+  width: 100%;
+  height: 100%;
+
+  background: var(--atc-card-background);
+  background-size: cover; // if it's an image
+  background-position: center; // if it's an image
+
+  border-radius: var(--atc-card-border-radius);
+
+  cursor: pointer;
+
+  /*** 
+  * Elements
+  ***/
+
+  .background-image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 33%;
+    left: 0;
+
+    mask-image: var(--atc-card-background-mask);
+    -webkit-mask-image: var(--atc-card-background-mask);
+
+    border-top-right-radius: var(--atc-card-border-radius);
+    border-top-left-radius: var(--atc-card-border-radius);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    // + .container .name-area {
+    //   text-shadow: rgb(18 22 23 / 90%) 1px 1px 5px;
+    // }
+  }
+
+  .container {
+    display: grid;
+    flex: 1;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 50% 50%;
+    grid-template-areas:
+      "icon-area additional-state-icon-area"
+      "name-area name-area";
+    width: 100%;
+    height: 100%;
+
+    .icon-area {
+      padding-top: var(--atc-card-spacing);
+      padding-left: var(--atc-card-spacing);
+      grid-area: icon-area;
+      --mdc-icon-size: 100%;
+      .icon-wrapper {
+        border-radius: 100%;
+        padding: 20%;
+        width: 100%;
+        height: 100%;
+
+        position: relative;
+        display: flex;
+        align-items: center;
+        background-color: var(--atc-icon-background);
+        border: var(--atc-icon-border);
+        justify-content: center;
+        background-size: cover; // if it's an image
+        transition: background-color 180ms ease-in-out 0s, border 180ms ease-in-out 0s;
+        .icon {
+          transition: color 180ms ease-in-out 0s;
+          color: var(--atc-icon-color);
+        }
+      }
+    }
+
+    .state-icon-area {
+      grid-area: additional-state-icon-area;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  
+    .name-area {
+      grid-area: name-area;
+      color: var(--atc-text-color);
+      padding-right: var(--atc-card-spacing);
+      padding-bottom: var(--atc-card-spacing);
+      padding-left: var(--atc-card-spacing);
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      .entity-state {
+        font-size: 1.2vw;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .entity-name {
+        font-size: 1.5vw;
+        font-weight: 400;
+        line-height: normal;
+        max-width: 100%;
+      }
+    }
+  }
+
+  /*** 
+  * Clicked State 
+  ***/
+
+  &.clicked {
+    animation: var(--atc-theme-click-animation);
+  }
+
+  /*** 
+  * Active State 
+  ***/
+
+  &.active{  
+    background: var(--atc-card-background-active);
+    background-size: cover; // if it's an image
+    background-position: center; // if it's an image
+
+    .container {
+      .icon-area .icon-wrapper {
+        border: var(--atc-icon-border-active);
+        background: var(--atc-icon-background-active);
+        background-size: cover; // if it's an image
+        background-position: center; // if it's an image
+        .icon {
+          color: var(--atc-icon-color-active);
+        }
+      }
+
+      .name-area{
+        color: var(--atc-text-color-active);
+      }
+    }
+  }
+}
+
+
+/*** 
+* Helper Classes 
+***/
+
+.ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+
+@keyframes card_bounce {
+  0% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scale(0.9);
+  }
+  25% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
