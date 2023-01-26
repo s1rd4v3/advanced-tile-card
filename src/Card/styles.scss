@@ -1,6 +1,11 @@
 * {
   box-sizing: border-box;
 }
+
+:host {
+  aspect-ratio: 1 / 1;
+}
+
 ha-card {
   /*** 
   * Variables START
@@ -15,7 +20,7 @@ ha-card {
   --atc-default-card-border-radius: var(--ha-card-border-radius, 12px);
 
   // Sizes variables
-  --atc-card-spacing: 1.5vw;
+  --atc-card-spacing: 1vw;
   --atc-card-border-radius: var(--atc-theme-card-border-radius, var(--atc-default-card-border-radius));
   
   // Card background variables
@@ -95,6 +100,8 @@ ha-card {
 
     .icon-area {
       padding-top: var(--atc-card-spacing);
+      padding-right: calc(var(--atc-card-spacing) / 2);
+      padding-bottom: calc(var(--atc-card-spacing) / 2);
       padding-left: var(--atc-card-spacing);
       grid-area: icon-area;
       --mdc-icon-size: 100%;
