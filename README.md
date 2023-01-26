@@ -1,5 +1,5 @@
 # Advanced Tile Card for Lovelace [under construction 🚧]
-> This card is not yet ready for production and is ment for private usage mainly. If anyone can use it, the better.
+> This card is not yet ready for production and is ment for my personal usage mainly. If anyone can use it, the better.
 
 ## Inspiration ❤️
 This card is heavily inspired by [matt8707](https://github.com/matt8707) [hass-config](https://github.com/matt8707/hass-config) config and the main reason - This was done using the [Boilerplate Card](https://github.com/custom-cards/boilerplate-card) by [@iantrich](https://www.github.com/iantrich).
