@@ -1,8 +1,9 @@
-# Advanced Tile Card for Lovelace [under construction 🚧]
-> This card is not yet ready for production and is ment for my personal usage mainly. If anyone can use it, the better.
+# Advanced Tile Card for Lovelace [🚧 under construction 🚧]
+> This card is not yet ready for production and is ment for my personal usage primarely. If someone else can use it, all the better.
 
 ## Inspiration ❤️
-This card is heavily inspired by [matt8707](https://github.com/matt8707) [hass-config](https://github.com/matt8707/hass-config) config and the main reason - This was done using the [Boilerplate Card](https://github.com/custom-cards/boilerplate-card) by [@iantrich](https://www.github.com/iantrich).
+- This card is heavily inspired by [matt8707](https://github.com/matt8707) [hass-config](https://github.com/matt8707/hass-config) config and the main reason I created this card 
+- This was done using the [Boilerplate Card](https://github.com/custom-cards/boilerplate-card) by [@iantrich](https://www.github.com/iantrich).
 
 ## Features
 - A click on the icon triggers the main entity action if there is an obvious one, a click on the rest of the card opens the `more-info` dialog
@@ -23,7 +24,9 @@ _TBD_
     - State string
         - Conditional rendering
         - State attribute modifier
-    - Possibility to add additional state bubble to the top right similar to [hass-config](https://github.com/matt8707/hass-config)
+    - Background image
+        - Conditional rendering
+    - Possibility to add additional state bubble to the top right similar to [hass-config](https://github.com/matt8707/hass-config)?
     - CSS optimisations
         - Responsivne
         - Preview fix
@@ -33,4 +36,8 @@ _TBD_
     - Swipercard implementation?
 - Camera
     - WebRTC support?
+- Sensor entity
+    - Visualize data with graph as background?
+- Media player entity
+    - Add progress bar if available?
 - ...

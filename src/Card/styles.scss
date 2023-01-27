@@ -148,9 +148,8 @@ ha-card {
       justify-content: end;
       .entity-state {
         font-size: 1.2vw;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
+        line-height: normal;
+        max-width: 100%;
       }
       .entity-name {
         font-size: 1.3vw;

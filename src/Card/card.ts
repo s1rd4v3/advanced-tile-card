@@ -165,7 +165,7 @@ export default class Card extends LitElement {
               ${this.config.name || this.entity.attributes.friendly_name}
             </span>
             ${this.showStateString ? html`
-              <span class="entity-state">${domainStateString || ''}</span>
+              <span class="entity-state ellipsis">${domainStateString || ''}</span>
             ` : ''
             }
           </div>
