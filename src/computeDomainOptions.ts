@@ -7,6 +7,7 @@ import {
   isEntityActive,
   createDomainOptions,
   playPauseAction,
+  turnOnScene,
   getEntityColorRgb,
   computeStateString
 } from "./helpers";
@@ -65,6 +66,10 @@ export const computeDomainOptions = (entity: HassEntity, hass: HomeAssistant, co
       return createDomainOptions({ entity, hass }, {
         domainStateString: entity.attributes.unit_of_measurement ? `${entity.state} ${entity.attributes.unit_of_measurement}` : false,
         noToggleAction: true,
+      });
+    case 'scene':
+      return createDomainOptions({ entity, hass }, {
+        domainToggleAction: () => turnOnScene(entity.entity_id, hass),
       });
     case 'binary_sensor':
       return createDomainOptions({ entity, hass }, {

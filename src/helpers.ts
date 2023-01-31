@@ -18,6 +18,11 @@ export const playPauseAction = (entityId: string, hass: HomeAssistant): ReturnTy
       entity_id: entityId,
     });
 }
+export const turnOnScene = (entityId: string, hass: HomeAssistant): ReturnType<HomeAssistant['callService']> => {
+  return hass.callService("scene", 'turn_on', {
+      entity_id: entityId,
+    });
+}
 
 export type DomainOptionsType = {
   domainClasses: Record<string, boolean>,
