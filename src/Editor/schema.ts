@@ -9,6 +9,13 @@ type ReturnType = {
 const schema = (icon: string, domain: string): ReturnType => {
   const generatedSchema = [
     {
+      name: 'is_square',
+      label: 'Square?',
+      selector: {
+        boolean: {}
+      }
+    },
+    {
       name: 'entity',
       label: 'Entity',
       selector: {
@@ -31,7 +38,7 @@ const schema = (icon: string, domain: string): ReturnType => {
       selector: {
         boolean: {}
       }
-    },
+    }
   ]
 
   if (domain === 'person') {

@@ -3,6 +3,9 @@
 }
 
 :host {
+  aspect-ratio: 2 / 1;
+}
+:host(.square) {
   aspect-ratio: 1 / 1;
 }
 
@@ -36,8 +39,11 @@ ha-card {
   --atc-icon-background: var(--atc-theme-icon-background, var(--atc-default-icon-background));
   --atc-icon-background-active: var(--atc-theme-icon-background-active, var(--atc-default-icon-background-active));
 
-  // --atc-icon-border: var(--atc-theme-icon-border, 0);
-  // --atc-icon-border-active: var(--atc-theme-icon-border-active, 0);
+  // Font sizes
+  --atc-name-font-size: var(--atc-theme-name-font-size, 16px);
+  --atc-name-font-weight: var(--atc-theme-name-font-weight, 500);
+  --atc-state-font-size: var(--atc-theme-state-font-size, 14px);
+  --atc-state-font-weight: var(--atc-theme-state-font-weight, 400);
 
   // Card text variables
   --atc-text-color: var(--primary-text-color);
@@ -147,13 +153,14 @@ ha-card {
       flex-direction: column;
       justify-content: end;
       .entity-state {
-        font-size: 1.2vw;
+        font-size: var(--atc-state-font-size);
+        font-weight: var(--atc-state-font-weight);
         line-height: normal;
         max-width: 100%;
       }
       .entity-name {
-        font-size: 1.3vw;
-        font-weight: 500;
+        font-size: var(--atc-name-font-size);
+        font-weight: var(--atc-name-font-weight);
         line-height: normal;
         max-width: 100%;
       }

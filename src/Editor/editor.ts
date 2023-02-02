@@ -23,6 +23,10 @@ export class AdvancedTileCardVisualEditor extends LitElement implements Lovelace
   public setConfig(config: AdvancedTileCardConfig): void {
     this._config = setDefaultConfigValues(config);
 
+    this.dispatchEvent(
+      new CustomEvent("config-changed", { detail: { config: this._config } })
+    );
+
     this.loadCardHelpers();
   }
 

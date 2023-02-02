@@ -37,6 +37,7 @@ export default class Card extends LitElement {
   }
   public static async getStubConfig(hass: HomeAssistant): Promise<Record<string, unknown>> {
     const entities = Object.keys(hass.states);
+    // Pick first light entity for preview
     const lights = entities.filter((e) => ['light'].includes(e.split(".")[0]));
     return {
       entity: lights[0],
@@ -77,6 +78,8 @@ export default class Card extends LitElement {
     if (config.test_gui) {
       getLovelace().setEditMode(true);
     }
+    
+    this.className += config.is_square ? ' square' : '';
     
     this.config = config;
   }

@@ -17,6 +17,7 @@ export interface AdvancedTileCardConfig extends LovelaceCardConfig {
   use_entity_picture_as_background?: boolean;
   show_state_string?: boolean;
   icon?: string;
+  is_square?: boolean;
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;

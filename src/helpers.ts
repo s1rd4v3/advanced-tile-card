@@ -71,7 +71,11 @@ export const createDomainOptions = (
 export const setDefaultConfigValues = (config: AdvancedTileCardConfig): AdvancedTileCardConfig => {
   const domain = computeDomain(config.entity ?? '');
 
+
   // Defaulting some config options
+  if (!Object.keys(config).includes('is_square')) {
+    config.is_square = true;
+  }
   if (!Object.keys(config).includes('use_entity_picture_as_icon')) {
     if (domain === 'person') {
       config.use_entity_picture_as_icon = true;
