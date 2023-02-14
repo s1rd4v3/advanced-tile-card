@@ -36,4 +36,5 @@ export default {
       },
     }),
   ],
+  context: 'window',
 };

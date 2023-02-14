@@ -30,7 +30,11 @@ const schema = (icon: string, domain: string): ReturnType => {
     {
       name: 'icon',
       label: 'Icon',
-      selector: { icon: { placeholder: icon }, },
+      selector: {
+        icon: {
+          placeholder: icon
+        },
+      },
     },
     {
       name: 'show_state_string',
@@ -38,7 +42,21 @@ const schema = (icon: string, domain: string): ReturnType => {
       selector: {
         boolean: {}
       }
-    }
+    },
+    {
+      name: 'icon_tap_action',
+      label: 'Icon Tap action',
+      selector: {
+        "ui-action": {}
+      }
+    },
+    {
+      name: 'tap_action',
+      label: 'Tap action',
+      selector: {
+        "ui-action": {}
+      }
+    },
   ]
 
   if (domain === 'person') {

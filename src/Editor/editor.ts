@@ -8,7 +8,7 @@ import { customElement, property, state } from 'lit/decorators';
 
 import schema from './schema'
 import { VISUAL_EDITOR_ID } from '../const';
-import { setDefaultConfigValues } from '../helpers';
+import { setDefaultConfigValues } from "./helpers/setDefaultConfigValues";
 
 @customElement(VISUAL_EDITOR_ID)
 export class AdvancedTileCardVisualEditor extends LitElement implements LovelaceCardEditor {

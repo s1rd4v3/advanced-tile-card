@@ -45,5 +45,6 @@ export default [
       inlineDynamicImports: true,
     },
     plugins: [...plugins],
+    context: 'window',
   },
 ];

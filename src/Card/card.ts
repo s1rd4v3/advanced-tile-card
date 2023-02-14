@@ -21,12 +21,11 @@ import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
 import { HassEntity } from 'home-assistant-js-websocket';
 import cardStyles from './styles.scss';
-import { isEntityActive } from '../helpers';
+import { isEntityActive } from "../helpers/isEntityActive";
 import { computeDomainOptions } from "../computeDomainOptions";
 
 @customElement(CARD_ID)
 export default class Card extends LitElement {
-  // TODO Add any properities that should cause your element to re-render here
   // https://lit.dev/docs/components/properties/
   
   @property() public hass!: HomeAssistant;
@@ -50,13 +49,10 @@ export default class Card extends LitElement {
   private entity?: HassEntity;
   private entityIcon?: string;
   private entityDomain?: string;
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private entityToggleAction: (() => ReturnType<HomeAssistant['callService']>) | undefined;
   private entityUsesEntityPictureAsIcon = false;
   private entityUsesEntityPictureAsBackground = false;
   private showStateString = false;
   @state() private entityIsActive = false;
-  private entityWithoutAction = false;
   private entityClasses: Record<string, boolean> = {};
   private entityStyles: Record<string, string> = {}; 
 
@@ -112,12 +108,7 @@ export default class Card extends LitElement {
       domainClasses,
       domainStyles,
       domainStateString,
-      domainToggleAction,
-      noToggleAction
     } = computeDomainOptions(this.entity, this.hass, this.config);
-
-    this.entityWithoutAction = noToggleAction;
-    this.entityToggleAction = domainToggleAction;
     
     this.entityStyles = {
       ...domainStyles
@@ -132,7 +123,7 @@ export default class Card extends LitElement {
     return html`
       <ha-card
         class="${classMap(this.entityClasses)}"
-        @action=${this._handleAction}
+        @action=${this._handleTap}
         .actionHandler=${actionHandler({
           hasHold: hasAction(this.config.hold_action),
           hasDoubleClick: hasAction(this.config.double_tap_action),
@@ -150,8 +141,9 @@ export default class Card extends LitElement {
 
           <div
             class="icon-area"
-            @click=${this._toggleEntity}
-            @touchend=${this._toggleEntity}
+            role="button"
+            @click=${this._handleIconTap}
+            @touchend=${this._handleIconTap}
           >
             <div class="icon-wrapper">
               ${!this.entityUsesEntityPictureAsIcon ? html`
@@ -178,29 +170,26 @@ export default class Card extends LitElement {
     `;
   }
 
-  private _handleAction(ev: ActionHandlerEvent): void {
+  private _handleTap(ev: ActionHandlerEvent) {
     this.toggleClickClass();
+    forwardHaptic('light');
 
-    if (this.hass && this.config && ev.detail.action) {
-      handleAction(this, this.hass, this.config, ev.detail.action);
-      forwardHaptic('light');
-    }
+    handleAction(this, this.hass, this.config, ev.detail.action);
   }
-  private _toggleEntity(e: ActionHandlerEvent): void {
+
+  private _handleIconTap(ev: CustomEvent) {
+    ev.preventDefault();
+    ev.stopPropagation();
+
     this.toggleClickClass();
-    e.preventDefault();
-    e.stopPropagation();
+    forwardHaptic('success');
 
-    if (this.entityWithoutAction) {
-      // Execute default action for non-actionable domains
-      this._handleAction({ detail: { action: 'more-info' } } as ActionHandlerEvent);
-      return;
-    }
+    const config = {
+      entity: this.config.entity,
+      tap_action: this.config.icon_tap_action,
+    };
 
-    if (this.hass && this.config.entity) {
-      this.entityToggleAction?.();
-      forwardHaptic('success');
-    }
+    handleAction(this, this.hass, config, "tap");
   }
 
   private toggleClickClass(): void {

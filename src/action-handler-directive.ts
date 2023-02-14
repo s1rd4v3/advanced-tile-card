@@ -63,6 +63,7 @@ class ActionHandler extends HTMLElement implements ActionHandler {
     });
   }
 
+  // public bind(element: ActionHandlerElement): void {
   public bind(element: ActionHandlerElement, options): void {
     if (element.actionHandler) {
       return;
@@ -111,7 +112,7 @@ class ActionHandler extends HTMLElement implements ActionHandler {
       this.timer = undefined;
       if (this.held) {
         fireEvent(element, 'action', { action: 'hold' });
-      } else if (options.hasDoubleClick) {
+      } else if (options?.hasDoubleClick) {
         if ((ev.type === 'click' && (ev as MouseEvent).detail < 2) || !this.dblClickTimeout) {
           this.dblClickTimeout = window.setTimeout(() => {
             this.dblClickTimeout = undefined;
