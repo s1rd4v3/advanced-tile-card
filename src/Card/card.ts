@@ -52,6 +52,7 @@ export default class Card extends LitElement {
   private entityUsesEntityPictureAsIcon = false;
   private entityUsesEntityPictureAsBackground = false;
   private showStateString = false;
+  private attributeToShow?: string | null;
   @state() private entityIsActive = false;
   private entityClasses: Record<string, boolean> = {};
   private entityStyles: Record<string, string> = {}; 
@@ -102,6 +103,7 @@ export default class Card extends LitElement {
     this.entityUsesEntityPictureAsIcon = this.config.use_entity_picture_as_icon || false;
     this.entityUsesEntityPictureAsBackground = this.config.use_entity_picture_as_background || false;
     this.showStateString = this.config.show_state_string || false;
+    this.attributeToShow = this.config.attribute_to_show || null;
     this.entityIsActive = isEntityActive(this.entity);
 
     const {

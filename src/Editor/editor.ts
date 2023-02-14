@@ -62,7 +62,7 @@ export class AdvancedTileCardVisualEditor extends LitElement implements Lovelace
   }
 
   protected render(): TemplateResult | void {
-    if (!this.hass || !this._helpers) {
+    if (!this.hass || !this._helpers || !this._config) {
       return html``;
     }
 
@@ -70,7 +70,7 @@ export class AdvancedTileCardVisualEditor extends LitElement implements Lovelace
       <hui-card-picker lovelace=""></hui-card-picker>
       <ha-form
         .hass=${this.hass}
-        .schema=${schema(this._icon, computeDomain(this._config?.entity ?? ''))}
+        .schema=${schema(this._icon, computeDomain(this._config?.entity ?? ''), this._config, this.hass)}
         .data=${{...this._config}}
         .computeLabel=${(s) => s.label ?? s.name}
         @value-changed=${this._handleChange}
