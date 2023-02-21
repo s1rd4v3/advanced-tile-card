@@ -3,8 +3,8 @@ import { AdvancedTileCardConfig } from "../../types";
 
 let oldEntity;
 // Defaulting some config options based on the entity domain
-export const setDefaultConfigValues = (config: AdvancedTileCardConfig): AdvancedTileCardConfig => {
-  const entityHasChanged = oldEntity !== config.entity;
+export const setDefaultConfigValues = (config: AdvancedTileCardConfig, isChangeEvent?: boolean): AdvancedTileCardConfig => {
+  const entityHasChanged = isChangeEvent && oldEntity !== config.entity;
   const domain = computeDomain(config.entity ?? '');
 
   if (!Object.keys(config).includes('is_square')) {

@@ -52,7 +52,7 @@ export class AdvancedTileCardVisualEditor extends LitElement implements Lovelace
   _handleChange(ev: any): void {
     if (!this._config) return;
 
-    const data = setDefaultConfigValues(ev.detail.value);
+    const data = setDefaultConfigValues(ev.detail.value, true);
     
     this._config = { ...this._config, ...data };
 
