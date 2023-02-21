@@ -40,6 +40,15 @@ export const setDefaultConfigValues = (config: AdvancedTileCardConfig): Advanced
           }
         };
         break;
+      case 'cover':
+        config.icon_tap_action = {
+          action: "call-service",
+          service: "cover.toggle",
+          target: {
+            entity_id: config.entity
+          }
+        };
+        break;
 
       default:
         config.icon_tap_action = { action: 'toggle' };
