@@ -6,7 +6,7 @@ import { computeStateString } from "./computeStateString";
 
 
 const showAttributeForState = (config: AdvancedTileCardConfig, entity: HassEntity): string | boolean => {
-  if (config.use_attribute_for_state) {
+  if (config.use_attribute_as_state) {
     if (entity.attributes[config.attribute_to_show]) {
       return entity.attributes[config.attribute_to_show]
     }
