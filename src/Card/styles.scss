@@ -120,7 +120,7 @@ ha-card {
         position: relative;
         display: flex;
         align-items: center;
-        background-color: var(--atc-icon-background);
+        background: var(--atc-icon-background);
         border: var(--atc-icon-border);
         justify-content: center;
         background-size: cover; // if it's an image

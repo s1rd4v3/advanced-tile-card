@@ -32,7 +32,6 @@ export const computeDomainOptions = (entity: HassEntity, hass: HomeAssistant, co
 
       return createDomainOptions({ entity, hass, config }, {
         domainStyles,
-        domainStateString: entity.state !== 'home' ? computeStateString(entity, hass) : false,
       });
 
     case 'lock':
