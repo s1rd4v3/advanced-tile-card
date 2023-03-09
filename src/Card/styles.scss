@@ -24,6 +24,7 @@ ha-card {
 
   // Sizes variables
   --atc-card-spacing: 1vw;
+  --atc-card-spacing-small: 12px;
   --atc-card-border-radius: var(--atc-theme-card-border-radius, var(--atc-default-card-border-radius));
   
   // Card background variables
@@ -91,6 +92,9 @@ ha-card {
     // + .container .name-area {
     //   text-shadow: rgb(18 22 23 / 90%) 1px 1px 5px;
     // }
+  }
+  @media screen and (max-width: 800px) {
+    --atc-card-spacing: 3vw;
   }
 
   .container {
