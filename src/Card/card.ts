@@ -43,8 +43,9 @@ export default class Card extends LitElement {
     };
   }
 
-  private isInitialized = false;
   @state() private isClicked = false;
+
+  private isDragging = false;
 
   private entity?: HassEntity;
   private entityIcon?: string;
@@ -146,6 +147,7 @@ export default class Card extends LitElement {
             role="button"
             @click=${this._handleIconTap}
             @touchend=${this._handleIconTap}
+            @touchmove=${this._handleIconTouchMove}
           >
             <div class="icon-wrapper">
               ${!this.entityUsesEntityPictureAsIcon ? html`
@@ -179,7 +181,15 @@ export default class Card extends LitElement {
     handleAction(this, this.hass, this.config, ev.detail.action);
   }
 
+  private _handleIconTouchMove() {
+    this.isDragging = true;
+  }
+
   private _handleIconTap(ev: CustomEvent) {
+    if (this.isDragging) {
+      this.isDragging = false;
+      return;
+    }
     ev.preventDefault();
     ev.stopPropagation();
 
