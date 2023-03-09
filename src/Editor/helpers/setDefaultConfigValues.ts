@@ -11,7 +11,7 @@ export const setDefaultConfigValues = (config: AdvancedTileCardConfig, isChangeE
     config.is_square = true;
   }
   
-  if (!Object.keys(config).includes('icon_tap_action') || !config.icon_tap_action || entityHasChanged) {
+  if (!Object.keys(config).includes('tap_action') || !config.tap_action || entityHasChanged) {
     switch (domain) {
       case 'person':
       case 'alarm_control_panel':
@@ -19,11 +19,11 @@ export const setDefaultConfigValues = (config: AdvancedTileCardConfig, isChangeE
       case 'sensor':
       case 'binary_sensor':
       case 'sun':
-        config.icon_tap_action = { action: 'more-info' };
+        config.tap_action = { action: 'more-info' };
         break;
 
       case 'scene':
-        config.icon_tap_action = {
+        config.tap_action = {
           action: "call-service",
           service: "scene.turn_on",
           target: {
@@ -32,7 +32,7 @@ export const setDefaultConfigValues = (config: AdvancedTileCardConfig, isChangeE
         };
         break;
       case 'media_player':
-        config.icon_tap_action = {
+        config.tap_action = {
           action: "call-service",
           service: "media_player.media_play_pause",
           target: {
@@ -41,7 +41,7 @@ export const setDefaultConfigValues = (config: AdvancedTileCardConfig, isChangeE
         };
         break;
       case 'cover':
-        config.icon_tap_action = {
+        config.tap_action = {
           action: "call-service",
           service: "cover.toggle",
           target: {
@@ -51,7 +51,7 @@ export const setDefaultConfigValues = (config: AdvancedTileCardConfig, isChangeE
         break;
 
       default:
-        config.icon_tap_action = { action: 'toggle' };
+        config.tap_action = { action: 'toggle' };
         break;
     }
   }

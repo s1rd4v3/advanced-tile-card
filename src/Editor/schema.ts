@@ -41,8 +41,8 @@ const schema = (icon: string, domain: string, config: AdvancedTileCardConfig, ha
     ),
     schemaObject.expandable_actions(
       [
-        schemaObject.icon_tap_action(),
         schemaObject.tap_action(),
+        schemaObject.icon_tap_action(),
       ]
     )
   ];
