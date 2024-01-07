@@ -17,17 +17,17 @@ import type { AdvancedTileCardConfig } from '../types';
 import { actionHandler } from '../action-handler-directive';
 import { CARD_ID, VISUAL_EDITOR_ID } from '../const';
 import { localize } from '../localize/localize';
-import { classMap } from "lit/directives/class-map.js";
-import { styleMap } from "lit/directives/style-map.js";
+import { classMap } from 'lit/directives/class-map.js';
+import { styleMap } from 'lit/directives/style-map.js';
 import { HassEntity } from 'home-assistant-js-websocket';
 import cardStyles from './styles.scss';
-import { isEntityActive } from "../helpers/isEntityActive";
-import { computeDomainOptions } from "../computeDomainOptions";
+import { isEntityActive } from '../helpers/isEntityActive';
+import { computeDomainOptions } from '../computeDomainOptions';
 
 @customElement(CARD_ID)
 export default class Card extends LitElement {
   // https://lit.dev/docs/components/properties/
-  
+
   @property() public hass!: HomeAssistant;
 
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
@@ -37,13 +37,15 @@ export default class Card extends LitElement {
   public static async getStubConfig(hass: HomeAssistant): Promise<Record<string, unknown>> {
     const entities = Object.keys(hass.states);
     // Pick first light entity for preview
-    const lights = entities.filter((e) => ['light'].includes(e.split(".")[0]));
+    const lights = entities.filter((e) => ['light'].includes(e.split('.')[0]));
     return {
       entity: lights[0],
     };
   }
 
   @state() private isClicked = false;
+  @state() private isAvailable = false;
+  @state() private isActive = false;
 
   private isDragging = false;
 
@@ -54,18 +56,14 @@ export default class Card extends LitElement {
   private entityUsesEntityPictureAsBackground = false;
   private showStateString = false;
   private attributeToShow?: string | null;
-  @state() private entityIsActive = false;
   private entityClasses: Record<string, boolean> = {};
-  private entityStyles: Record<string, string> = {}; 
-
-
-  
+  private entityStyles: Record<string, string> = {};
 
   @state() private config!: AdvancedTileCardConfig;
 
   getCardSize(): number | Promise<number> {
     return 1;
-}
+  }
 
   // https://lit.dev/docs/components/properties/#accessors-custom
   public setConfig(config: AdvancedTileCardConfig): void {
@@ -76,9 +74,9 @@ export default class Card extends LitElement {
     if (config.test_gui) {
       getLovelace().setEditMode(true);
     }
-    
+
     this.className += config.is_square ? ' square' : '';
-    
+
     this.config = config;
   }
 
@@ -93,7 +91,7 @@ export default class Card extends LitElement {
 
   // https://lit.dev/docs/components/rendering/
   protected render(): TemplateResult | void {
-    if(!this.config.entity) {
+    if (!this.config.entity) {
       return this._showWarning(localize('common.missing_entity'));
     }
 
@@ -105,22 +103,24 @@ export default class Card extends LitElement {
     this.entityUsesEntityPictureAsBackground = this.config.use_entity_picture_as_background || false;
     this.showStateString = this.config.show_state_string || false;
     this.attributeToShow = this.config.attribute_to_show || null;
-    this.entityIsActive = isEntityActive(this.entity);
+    this.isActive = isEntityActive(this.entity);
+    this.isAvailable = this.entity !== undefined && this.entity.state !== 'unavailable';
 
-    const {
-      domainClasses,
-      domainStyles,
-      domainStateString,
-    } = computeDomainOptions(this.entity, this.hass, this.config);
-    
+    const { domainClasses, domainStyles, domainStateString } = computeDomainOptions(
+      this.entity,
+      this.hass,
+      this.config,
+    );
+
     this.entityStyles = {
-      ...domainStyles
+      ...domainStyles,
     };
     this.entityClasses = {
       ...this.entityClasses,
       ...domainClasses,
-      clicked: this.isClicked,
-      active: this.entityIsActive
+      isClicked: this.isClicked,
+      isActive: this.isActive,
+      isUnavailable: !this.isAvailable,
     };
 
     return html`
@@ -131,17 +131,16 @@ export default class Card extends LitElement {
           hasHold: hasAction(this.config.hold_action),
           hasDoubleClick: hasAction(this.config.double_tap_action),
         })}
-         style="${styleMap(this.entityStyles)}"
+        style="${styleMap(this.entityStyles)}"
         tabindex="0"
       >
-      ${this.entityUsesEntityPictureAsBackground && this.entity?.attributes.entity_picture ? html`
-        <div class="background-image">
-          <img src="${this.entity?.attributes.entity_picture}">
-        </div>` : ''
-      }
+        ${this.entityUsesEntityPictureAsBackground && this.entity?.attributes.entity_picture
+          ? html` <div class="background-image">
+              <img src="${this.entity?.attributes.entity_picture}" />
+            </div>`
+          : ''}
 
         <div class="container">
-
           <div
             class="icon-area"
             role="button"
@@ -150,25 +149,18 @@ export default class Card extends LitElement {
             @touchmove=${this._handleIconTouchMove}
           >
             <div class="icon-wrapper">
-              ${!this.entityUsesEntityPictureAsIcon ? html`
-                <ha-state-icon class="icon" .icon=${this.entityIcon}>
-                </ha-state-icon>
-              ` : ''}
+              ${!this.entityUsesEntityPictureAsIcon
+                ? html` <ha-state-icon class="icon" .icon=${this.entityIcon}> </ha-state-icon> `
+                : ''}
             </div>
           </div>
 
           <span class="state-icon-area"></span>
 
           <div class="name-area">
-            <span class="entity-name ellipsis">
-              ${this.config.name || this.entity.attributes.friendly_name}
-            </span>
-            ${this.showStateString ? html`
-              <span class="entity-state ellipsis">${domainStateString || ''}</span>
-            ` : ''
-            }
+            <span class="entity-name ellipsis"> ${this.config.name || this.entity.attributes.friendly_name} </span>
+            ${this.showStateString ? html` <span class="entity-state ellipsis">${domainStateString || ''}</span> ` : ''}
           </div>
-
         </div>
       </ha-card>
     `;
@@ -201,14 +193,14 @@ export default class Card extends LitElement {
       tap_action: this.config.icon_tap_action,
     };
 
-    handleAction(this, this.hass, config, "tap");
+    handleAction(this, this.hass, config, 'tap');
   }
 
   private toggleClickClass(): void {
     this.isClicked = true;
 
     setTimeout(() => {
-      this.isClicked = false
+      this.isClicked = false;
     }, 500);
   }
 

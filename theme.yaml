@@ -13,29 +13,36 @@ Gugg iis:
   # Card variables
   atc-theme-card-background: rgba(115, 115, 115, 0.2)
   atc-theme-card-background-active: rgba(255, 255, 255, 0.9)
+  atc-theme-card-background-unavailable: rgba(115, 115, 115, 0.1)
   atc-theme-card-border-radius: 16px
   atc-theme-click-animation: "card_bounce 900ms cubic-bezier(0.22, 1, 0.36, 1)"
+  atc-theme-name-font-size: 16px
+  atc-theme-name-font-weight: 500
+  atc-theme-state-font-size: 14px
+  atc-theme-state-font-weight: 400
 
   # Icon variables
   atc-theme-icon-color: var(--primary-text-color)
   atc-theme-icon-color-active: var(--primary-color)
   atc-theme-icon-background: "#626a6f"
   atc-theme-icon-background-active: var(--light-primary-color)
-  atc-theme-icon-border: "1px solid #9da0a2"
-  atc-theme-icon-border-active: "2px solid var(--primary-color)"
+  atc-theme-icon-background-unavailable: var(--atc-theme-card-background-unavailable)
+  atc-theme-card-gap: 16px
 
+  # hassio vars
   lovelace-background: url('/local/lovelace/background.png')
 
   primary-text-color: "#e1e1e1"
   primary-text-color-active: rgba(0, 0, 0, 0.6)
+  primary-text-color-unavailable: "#717171"
 
   ha-card-border-width: 0
 
   #default dark mode
   primary-color: "#03a9f4"
   card-background-color: var(--atc-theme-card-background)
-  grid-card-gap: 16px
-  masonry-view-card-margin: 4px 5% 8px
+  grid-card-gap: var(--atc-theme-card-gap)
+  masonry-view-card-margin: 4px 16px 8px
   ha-card-header-color: rgba(255, 255, 255, 0.8)
 
   # secondary-background-color: "#202020"
@@ -71,6 +78,11 @@ Gugg iis:
   #    background: url('/local/background.png');
   #    background-size: cover;
   #  }
+  card-mod-more-info-yaml: |
+    $: |
+      ha-dialog {
+        --card-background-color: red;
+      }
   card-mod-view-yaml: |
     .: |
       hui-view {
@@ -83,33 +95,49 @@ Gugg iis:
             #main {
               order: 2
             }
-          
+            #sidebar#sidebar {
+              max-width: 300px;
+              width: 300px;
+            }
+            /* phone */
+            @media screen and (max-width: 800px) {
+              #sidebar#sidebar {
+                display: none;
+              }
+              hui-grid-card {
+                --grid-card-column-count: 1 !important;
+              }
+            }
           hui-grid-card:
-            $: |
-              #root#root {
-                grid-gap: calc(2 * var(--grid-card-gap, 8px))
-              }
-              /* default */
-              h1 {
-                font-size: 2.4vw !important;
-                line-height: 0 !important;
-                font-family: Roboto !important;
-                font-weight: 500 !important;
-                color: rgba(255, 255, 255, 0.8) !important;
-                padding: 1vw 0 2vw 0 !important;
-              }
-              /* portrait */
-              @media screen and (max-width: 1200px) {
-                h1 {
-                  font-size: 3.3vw !important;
-                  line-height: 1.1vw !important;
+            $:
+              .: |
+                #root {
+                  --grid-card-gap: calc(2 * var(--atc-theme-card-gap, 16px));
                 }
-              }
-              /* phone */
-              @media screen and (max-width: 800px) {
-                h1 {
-                  font-size: 5.5vw !important;
-                  line-height: 6vw !important;
-                  margin: 2vw 0 0 0 !important;
-                }
-              }
+              hui-grid-card:
+                $: |
+                  #root {
+                    --grid-card-gap: var(--atc-theme-card-gap, 16px);
+                  }
+                  /* default */
+                  h1.card-header {
+                    padding-left: 0;
+                    padding-right: 0;
+                    font-size: 25px;
+                    font-weight: 400;
+                  }
+                  /* portrait */
+                  @media screen and (max-width: 1200px) {
+                    h1 {
+                      /* font-size: 1.3vw !important; */
+                      /* !include line-height: 1.1vw !important; */
+                    }
+                  }
+                  /* phone */
+                  @media screen and (max-width: 800px) {
+                    h1 {
+                      /* font-size: 5.5vw !important;
+                      line-height: 6vw !important;
+                      margin: 2vw 0 0 0 !important; */
+                    }
+                  }

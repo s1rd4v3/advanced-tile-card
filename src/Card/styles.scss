@@ -26,19 +26,25 @@ ha-card {
   --atc-card-spacing: 1vw;
   --atc-card-spacing-small: 12px;
   --atc-card-border-radius: var(--atc-theme-card-border-radius, var(--atc-default-card-border-radius));
-  
+
   // Card background variables
   --atc-card-background: var(--atc-theme-card-background, var(--atc-default-card-background));
   --atc-card-background-active: var(--atc-theme-card-background-active, var(--atc-default-card-background));
+  --atc-card-background-unavailable: var(--atc-theme-card-background-unavailable, transparent);
 
   --atc-card-background-mask: linear-gradient(0deg, transparent 0%, black 100%);
 
   // Card Icon variables
   --atc-icon-color: var(--atc-theme-icon-color, var(--atc-default-icon-color));
   --atc-icon-color-active: var(--atc-theme-icon-color-active, var(--atc-default-icon-color-active));
+  --atc-icon-color-unavailable: var(--primary-text-color-unavailable);
 
   --atc-icon-background: var(--atc-theme-icon-background, var(--atc-default-icon-background));
   --atc-icon-background-active: var(--atc-theme-icon-background-active, var(--atc-default-icon-background-active));
+  --atc-icon-background-unavailable: var(
+    --atc-theme-icon-background-unavailable,
+    var(var(--atc-default-card-background))
+  );
 
   // Font sizes
   --atc-name-font-size: var(--atc-theme-name-font-size, 16px);
@@ -49,11 +55,11 @@ ha-card {
   // Card text variables
   --atc-text-color: var(--primary-text-color);
   --atc-text-color-active: var(--primary-text-color-active);
-  
+  --atc-text-color-unavailable: var(--primary-text-color-unavailable);
+
   /*** 
   * Variables END
   ***/
-
 
   width: 100%;
   height: 100%;
@@ -103,8 +109,8 @@ ha-card {
     grid-template-columns: 50% 50%;
     grid-template-rows: 50% 50%;
     grid-template-areas:
-      "icon-area additional-state-icon-area"
-      "name-area name-area";
+      'icon-area additional-state-icon-area'
+      'name-area name-area';
     width: 100%;
     height: 100%;
 
@@ -146,7 +152,7 @@ ha-card {
       align-items: center;
       justify-content: center;
     }
-  
+
     .name-area {
       grid-area: name-area;
       color: var(--atc-text-color);
@@ -172,10 +178,30 @@ ha-card {
   }
 
   /*** 
+  * Available State 
+  ***/
+  &.isUnavailable {
+    background: var(--atc-card-background-unavailable);
+    .container {
+      .name-area {
+        color: var(--atc-text-color-unavailable);
+      }
+      .icon-area {
+        .icon-wrapper {
+          background: var(--atc-icon-background-unavailable);
+          .icon {
+            color: var(--atc-icon-color-unavailable);
+          }
+        }
+      }
+    }
+  }
+
+  /*** 
   * Clicked State 
   ***/
 
-  &.clicked {
+  &.isClicked {
     animation: var(--atc-theme-click-animation);
   }
 
@@ -183,7 +209,7 @@ ha-card {
   * Active State 
   ***/
 
-  &.active{  
+  &.isActive {
     background: var(--atc-card-background-active);
     background-size: cover; // if it's an image
     background-position: center; // if it's an image
@@ -199,13 +225,12 @@ ha-card {
         }
       }
 
-      .name-area{
+      .name-area {
         color: var(--atc-text-color-active);
       }
     }
   }
 }
-
 
 /*** 
 * Helper Classes 
@@ -216,7 +241,6 @@ ha-card {
   white-space: nowrap;
   overflow: hidden;
 }
-
 
 @keyframes card_bounce {
   0% {
