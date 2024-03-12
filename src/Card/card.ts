@@ -1,34 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { LitElement, html, TemplateResult, unsafeCSS, PropertyValues, CSSResultGroup } from 'lit';
-import { customElement, property, state } from 'lit/decorators';
 import {
-  HomeAssistant,
-  hasConfigOrEntityChanged,
-  hasAction,
   ActionHandlerEvent,
-  handleAction,
+  HomeAssistant,
+  LovelaceCard,
   LovelaceCardEditor,
-  getLovelace,
-  stateIcon,
   forwardHaptic,
+  getLovelace,
+  handleAction,
+  hasConfigOrEntityChanged,
+  stateIcon,
 } from 'custom-card-helpers'; // This is a community maintained npm module with common helper functions/types. https://github.com/custom-cards/custom-card-helpers
+import { CSSResultGroup, LitElement, PropertyValues, TemplateResult, html, unsafeCSS } from 'lit';
+import { customElement, property, state } from 'lit/decorators';
 
-import type { AdvancedTileCardConfig } from '../types';
-import { actionHandler } from '../action-handler-directive';
-import { CARD_ID, VISUAL_EDITOR_ID } from '../const';
-import { localize } from '../localize/localize';
+import { HassEntity } from 'home-assistant-js-websocket';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import { HassEntity } from 'home-assistant-js-websocket';
-import cardStyles from './styles.scss';
-import { isEntityActive } from '../helpers/isEntityActive';
+import { actionHandler } from '../action-handler-directive';
 import { computeDomainOptions } from '../computeDomainOptions';
+import { CARD_ID, VISUAL_EDITOR_ID } from '../const';
+import { isEntityActive } from '../helpers/isEntityActive';
+import { localize } from '../localize/localize';
+import type { AdvancedTileCardConfig } from '../types';
+import cardStyles from './styles.scss';
 
 @customElement(CARD_ID)
-export default class Card extends LitElement {
+export default class Card extends LitElement implements LovelaceCard {
   // https://lit.dev/docs/components/properties/
 
-  @property() public hass!: HomeAssistant;
+  @property({ attribute: false }) public hass!: HomeAssistant;
 
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
     await import('../Editor/editor');
@@ -44,26 +44,12 @@ export default class Card extends LitElement {
   }
 
   @state() private isClicked = false;
-  @state() private isAvailable = false;
-  @state() private isActive = false;
 
   private isDragging = false;
 
   private entity?: HassEntity;
-  private entityIcon?: string;
-  private entityDomain?: string;
-  private entityUsesEntityPictureAsIcon = false;
-  private entityUsesEntityPictureAsBackground = false;
-  private showStateString = false;
-  private attributeToShow?: string | null;
-  private entityClasses: Record<string, boolean> = {};
-  private entityStyles: Record<string, string> = {};
 
   @state() private config!: AdvancedTileCardConfig;
-
-  getCardSize(): number | Promise<number> {
-    return 1;
-  }
 
   // https://lit.dev/docs/components/properties/#accessors-custom
   public setConfig(config: AdvancedTileCardConfig): void {
@@ -75,10 +61,25 @@ export default class Card extends LitElement {
       getLovelace().setEditMode(true);
     }
 
-    this.className += config.is_square ? ' square' : '';
+    // this.className += config.is_double_height ? ' double-height' : '';
 
     this.config = config;
   }
+
+  public getCardSize(): number {
+    return parseInt(this.config.card_rows, 10);
+  }
+
+  public getGridSize() {
+    return [this.config.card_columns, this.config.card_rows];
+  }
+  // TODO: Preparation for after v2024.3.0
+  // public getLayoutOptions() {
+  //   return {
+  //     grid_columns: this.config.card_columns,
+  //     grid_rows: this.config.card_rows,
+  //   };
+  // }
 
   // https://lit.dev/docs/components/lifecycle/#reactive-update-cycle-performing
   protected shouldUpdate(changedProps: PropertyValues): boolean {
@@ -96,15 +97,15 @@ export default class Card extends LitElement {
     }
 
     // Set entity properties
-    this.entity = this.hass.states[this.config.entity];
-    this.entityIcon = this.config.icon || stateIcon(this.entity);
-    this.entityDomain = this.entity?.entity_id.split('.')[0];
-    this.entityUsesEntityPictureAsIcon = this.config.use_entity_picture_as_icon || false;
-    this.entityUsesEntityPictureAsBackground = this.config.use_entity_picture_as_background || false;
-    this.showStateString = this.config.show_state_string || false;
-    this.attributeToShow = this.config.attribute_to_show || null;
-    this.isActive = isEntityActive(this.entity);
-    this.isAvailable = this.entity !== undefined && this.entity.state !== 'unavailable';
+    this.entity = this.hass?.states[this.config.entity];
+    const entityIcon = this.config.icon || stateIcon(this.entity);
+    const entityUsesEntityPictureAsIcon = this.config.use_entity_picture_as_icon || false;
+    const entityUsesEntityPictureAsBackground = this.config.use_entity_picture_as_background || false;
+    const showStateString = this.config.show_state_string || false;
+    const isActive = isEntityActive(this.entity);
+    const isUnavailable = this.entity === undefined || this.entity.state === 'unavailable';
+    const isTallLayout = parseInt(this.config.card_rows, 10) > 1;
+    const isWideLayout = parseInt(this.config.card_columns, 10) > 1;
 
     const { domainClasses, domainStyles, domainStateString } = computeDomainOptions(
       this.entity,
@@ -112,29 +113,30 @@ export default class Card extends LitElement {
       this.config,
     );
 
-    this.entityStyles = {
+    const entityStyles = {
       ...domainStyles,
     };
-    this.entityClasses = {
-      ...this.entityClasses,
+    const entityClasses = {
       ...domainClasses,
-      isClicked: this.isClicked,
-      isActive: this.isActive,
-      isUnavailable: !this.isAvailable,
+      'is-clicked': this.isClicked,
+      'is-active': isActive,
+      'is-unavailable': isUnavailable,
+      'is-tall-layout': isTallLayout,
+      'is-wide-layout': isWideLayout,
+      'entity-picture-as-icon': entityUsesEntityPictureAsIcon,
     };
 
     return html`
       <ha-card
-        class="${classMap(this.entityClasses)}"
+        class="${classMap(entityClasses)}"
         @action=${this._handleTap}
-        .actionHandler=${actionHandler({
-          hasHold: hasAction(this.config.hold_action),
-          hasDoubleClick: hasAction(this.config.double_tap_action),
-        })}
-        style="${styleMap(this.entityStyles)}"
+        .actionHandler=${actionHandler()}
+        style="${styleMap(entityStyles)}"
         tabindex="0"
       >
-        ${this.entityUsesEntityPictureAsBackground && this.entity?.attributes.entity_picture
+        ${entityUsesEntityPictureAsBackground &&
+        parseInt(this.config.card_rows, 10) > 1 &&
+        this.entity?.attributes.entity_picture
           ? html` <div class="background-image">
               <img src="${this.entity?.attributes.entity_picture}" />
             </div>`
@@ -149,17 +151,17 @@ export default class Card extends LitElement {
             @touchmove=${this._handleIconTouchMove}
           >
             <div class="icon-wrapper">
-              ${!this.entityUsesEntityPictureAsIcon
-                ? html` <ha-state-icon class="icon" .icon=${this.entityIcon}> </ha-state-icon> `
+              ${!entityUsesEntityPictureAsIcon
+                ? html` <ha-state-icon class="icon" .icon=${entityIcon}> </ha-state-icon> `
                 : ''}
             </div>
           </div>
 
-          <span class="state-icon-area"></span>
+          <!-- ${isTallLayout ? html`<span class="state-icon-area"></span>` : ''} -->
 
           <div class="name-area">
             <span class="entity-name ellipsis"> ${this.config.name || this.entity.attributes.friendly_name} </span>
-            ${this.showStateString ? html` <span class="entity-state ellipsis">${domainStateString || ''}</span> ` : ''}
+            ${showStateString ? html` <span class="entity-state ellipsis">${domainStateString || ''}</span> ` : ''}
           </div>
         </div>
       </ha-card>
@@ -211,5 +213,13 @@ export default class Card extends LitElement {
   // https://lit.dev/docs/components/styles/
   static get styles(): CSSResultGroup {
     return unsafeCSS(cardStyles);
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'advanced-tile-card-visual-editor': LovelaceCardEditor;
+    'advanced-tile-card': Card;
+    'hui-error-card': LovelaceCard;
   }
 }

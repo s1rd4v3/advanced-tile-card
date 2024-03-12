@@ -1,11 +1,11 @@
-import resolve from 'rollup-plugin-node-resolve';
-import typescript from 'rollup-plugin-typescript2';
+import json from '@rollup/plugin-json';
 import babel from 'rollup-plugin-babel';
+import css from 'rollup-plugin-import-css';
+import resolve from 'rollup-plugin-node-resolve';
+import scss from 'rollup-plugin-scss';
 import serve from 'rollup-plugin-serve';
 import { terser } from 'rollup-plugin-terser';
-import json from '@rollup/plugin-json';
-import css from "rollup-plugin-import-css";
-import scss from 'rollup-plugin-scss'
+import typescript from 'rollup-plugin-typescript2';
 
 export default {
   input: ['src/index.ts'],
@@ -29,7 +29,7 @@ export default {
     serve({
       contentBase: './dist',
       host: '0.0.0.0',
-      port: 5000,
+      port: 5001,
       allowCrossOrigin: true,
       headers: {
         'Access-Control-Allow-Origin': '*',

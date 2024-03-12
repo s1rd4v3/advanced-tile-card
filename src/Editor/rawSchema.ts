@@ -43,13 +43,17 @@ const rawSchema = (icon: string, domain: string, config: AdvancedTileCardConfig,
       },
     },
   }),
-  is_square: () => ({
+  card_rows: () => ({
     condition: () => true,
-    name: 'is_square',
-    label: hass.localize('ui.panel.lovelace.editor.card.grid.square'),
-    selector: {
-      boolean: {},
-    },
+    name: 'card_rows',
+    label: 'Rows',
+    selector: { number: { min: 1, max: 4, mode: 'slider' } },
+  }),
+  card_columns: () => ({
+    condition: () => true,
+    name: 'card_columns',
+    label: 'Columns',
+    selector: { number: { min: 1, max: 4, mode: 'slider' } },
   }),
   icon_tap_action: () => ({
     condition: () => true,
@@ -110,7 +114,7 @@ const rawSchema = (icon: string, domain: string, config: AdvancedTileCardConfig,
     },
   }),
   use_entity_picture_as_icon: () => ({
-    condition: () => domain === 'person',
+    condition: () => domain === 'person' || domain === 'camera' || domain === 'media_player',
     name: 'use_entity_picture_as_icon',
     label: `${hass.localize('ui.dialogs.helper_settings.generic.icon')}: ${hass.localize(
       'ui.panel.lovelace.editor.card.tile.show_entity_picture',
@@ -120,7 +124,8 @@ const rawSchema = (icon: string, domain: string, config: AdvancedTileCardConfig,
     },
   }),
   use_entity_picture_as_background: () => ({
-    condition: () => domain === 'person' || domain === 'camera' || domain === 'media_player',
+    condition: () =>
+      parseInt(config.card_rows, 10) > 1 && (domain === 'person' || domain === 'camera' || domain === 'media_player'),
     name: 'use_entity_picture_as_background',
     label: `Background: ${hass.localize('ui.panel.lovelace.editor.card.tile.show_entity_picture')}`,
     selector: {

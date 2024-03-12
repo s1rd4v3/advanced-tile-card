@@ -1,12 +1,12 @@
 import { noChange } from 'lit';
 import { AttributePart, directive, Directive, DirectiveParameters } from 'lit/directive';
 
-import { ActionHandlerDetail, ActionHandlerOptions } from 'custom-card-helpers/dist/types';
 import { fireEvent } from 'custom-card-helpers';
+import { ActionHandlerDetail, ActionHandlerOptions } from 'custom-card-helpers/dist/types';
 
 const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0;
 
-interface ActionHandler extends HTMLElement {
+interface ActionHandlerType extends HTMLElement {
   holdTime: number;
   bind(element: Element, options): void;
 }
@@ -15,12 +15,15 @@ interface ActionHandlerElement extends HTMLElement {
 }
 
 declare global {
+  interface HTMLElementTagNameMap {
+    'action-handler-advanced-tile-card': ActionHandler;
+  }
   interface HASSDomEvents {
     action: ActionHandlerDetail;
   }
 }
 
-class ActionHandler extends HTMLElement implements ActionHandler {
+export class ActionHandler extends HTMLElement implements ActionHandlerType {
   public holdTime = 500;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -167,20 +170,20 @@ class ActionHandler extends HTMLElement implements ActionHandler {
 const cardName = 'action-handler-advanced-tile-card';
 customElements.define(cardName, ActionHandler);
 
-const getActionHandler = (): ActionHandler => {
+const getActionHandler = (): ActionHandlerType => {
   const body = document.body;
   if (body.querySelector(cardName)) {
-    return body.querySelector(cardName) as ActionHandler;
+    return body.querySelector(cardName) as ActionHandlerType;
   }
 
   const actionhandler = document.createElement(cardName);
   body.appendChild(actionhandler);
 
-  return actionhandler as ActionHandler;
+  return actionhandler as ActionHandlerType;
 };
 
 export const actionHandlerBind = (element: ActionHandlerElement, options?: ActionHandlerOptions): void => {
-  const actionhandler: ActionHandler = getActionHandler();
+  const actionhandler: ActionHandlerType = getActionHandler();
   if (!actionhandler) {
     return;
   }

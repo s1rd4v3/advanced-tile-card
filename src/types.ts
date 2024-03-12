@@ -1,14 +1,9 @@
-import { ActionConfig, LovelaceCard, LovelaceCardConfig, LovelaceCardEditor } from 'custom-card-helpers';
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'advanced-tile-card-visual-editor': LovelaceCardEditor;
-    'hui-error-card': LovelaceCard;
-  }
-}
+import { ActionConfig, LovelaceCardConfig } from 'custom-card-helpers';
 
 export interface AdvancedTileCardConfig extends LovelaceCardConfig {
   type: string;
+  card_rows: string;
+  card_columns: string;
   name?: string;
   test_gui?: boolean;
   entity?: string;
@@ -23,12 +18,11 @@ export interface AdvancedTileCardConfig extends LovelaceCardConfig {
   double_tap_action?: ActionConfig;
   icon_tap_action: ActionConfig;
   icon?: string;
-  is_square?: boolean;
   use_attribute_as_state?: boolean;
 }
 
 export type DomainOptionsType = {
-  domainClasses: Record<string, boolean>,
-  domainStyles: Record<string, string>,
-  domainStateString?: string | boolean,
-}
+  domainClasses: Record<string, boolean>;
+  domainStyles: Record<string, string>;
+  domainStateString?: string | boolean;
+};

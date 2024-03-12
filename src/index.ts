@@ -1,6 +1,6 @@
+import Card from './Card/card';
 import { CARD_DETAILS, CARD_VERSION } from './const';
 import { localize } from './localize/localize';
-import Card from './Card/card'
 
 // This puts your card into the UI card picker dialog
 window.customCards = window.customCards || [];
@@ -12,7 +12,6 @@ declare global {
     customCards?: unknown[];
   }
 }
-
 
 /* eslint no-console: 0 */
 console.info(
