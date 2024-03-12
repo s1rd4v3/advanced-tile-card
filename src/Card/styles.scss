@@ -2,49 +2,41 @@
   box-sizing: border-box;
 }
 
-:host {
-  aspect-ratio: 2 / 1;
-}
-:host(.square) {
-  aspect-ratio: 1 / 1;
-}
-
 ha-card {
   /*** 
   * Variables START
   ***/
 
-  // Defaults defined by HA
+  // Defaults defined by HA variables
   --atc-default-card-background: var(--ha-card-background, var(--card-background-color, white));
-  --atc-default-icon-color: rgb(var(--rgb-state-inactive-color));
-  --atc-default-icon-color-active: rgb(var(--rgb-state-switch-color));
-  --atc-default-icon-background: rgba(var(--rgb-state-inactive-color), 0.2);
-  --atc-default-icon-background-active: rgba(var(--rgb-state-switch-color), 0.2);
   --atc-default-card-border-radius: var(--ha-card-border-radius, 12px);
-
-  // Sizes variables
-  --atc-card-spacing: 1vw;
-  --atc-card-spacing-small: 12px;
-  --atc-card-border-radius: var(--atc-theme-card-border-radius, var(--atc-default-card-border-radius));
+  --atc-default-icon-color: var(--state-inactive-color);
+  --atc-default-icon-color-active: var(--primary-color);
+  --atc-default-icon-background: var(--state-inactive-color);
+  --atc-default-icon-background-active: var(--primary-color);
+  --atc-default-icon-background-opacity: 0.2;
+  --atc-default-text-color: var(--primary-text-color);
+  --atc-default-text-color-active: var(--primary-text-color-active);
+  --atc-default-text-color-unavailble: var(--state-inactive-color);
 
   // Card background variables
   --atc-card-background: var(--atc-theme-card-background, var(--atc-default-card-background));
   --atc-card-background-active: var(--atc-theme-card-background-active, var(--atc-default-card-background));
   --atc-card-background-unavailable: var(--atc-theme-card-background-unavailable, transparent);
-
-  --atc-card-background-mask: linear-gradient(0deg, transparent 0%, black 100%);
+  --atc-card-background-mask: linear-gradient(0deg, transparent 50px, black 100%);
+  --atc-card-spacing: 12px;
+  --atc-card-border-radius: var(--atc-theme-card-border-radius, var(--atc-default-card-border-radius));
+  --atc-card-transition: 180ms ease-in-out 0s;
 
   // Card Icon variables
+  --atc-icon-size: var(--atc-theme-icon-size, 40px);
   --atc-icon-color: var(--atc-theme-icon-color, var(--atc-default-icon-color));
   --atc-icon-color-active: var(--atc-theme-icon-color-active, var(--atc-default-icon-color-active));
-  --atc-icon-color-unavailable: var(--primary-text-color-unavailable);
-
+  --atc-icon-color-unavailable: var(--state-inactive-color);
   --atc-icon-background: var(--atc-theme-icon-background, var(--atc-default-icon-background));
   --atc-icon-background-active: var(--atc-theme-icon-background-active, var(--atc-default-icon-background-active));
-  --atc-icon-background-unavailable: var(
-    --atc-theme-icon-background-unavailable,
-    var(var(--atc-default-card-background))
-  );
+  --atc-icon-background-unavailable: var(--atc-theme-icon-background-unavailable,var(--atc-default-card-background));
+  --atc-icon-background-opacity: var(--atc-theme-icon-background-opacity, var(--atc-default-icon-background-opacity));
 
   // Font sizes
   --atc-name-font-size: var(--atc-theme-name-font-size, 16px);
@@ -53,9 +45,9 @@ ha-card {
   --atc-state-font-weight: var(--atc-theme-state-font-weight, 400);
 
   // Card text variables
-  --atc-text-color: var(--primary-text-color);
-  --atc-text-color-active: var(--primary-text-color-active);
-  --atc-text-color-unavailable: var(--primary-text-color-unavailable);
+  --atc-text-color: var(--atc-theme-text-color, var(--atc-default-text-color));
+  --atc-text-color-active: var(--atc-theme-text-color-active, var(--atc-default-text-color-active));
+  --atc-text-color-unavailable: var(--atc-theme-text-color-unavailable, var(--atc-default-text-color-unavailble));
 
   /*** 
   * Variables END
@@ -67,6 +59,7 @@ ha-card {
   background: var(--atc-card-background);
   background-size: cover; // if it's an image
   background-position: center; // if it's an image
+  transition: background-color var(--atc-card-transition);
 
   border-radius: var(--atc-card-border-radius);
 
@@ -80,88 +73,90 @@ ha-card {
     position: absolute;
     top: 0;
     right: 0;
-    bottom: 33%;
+    bottom: 0;
     left: 0;
 
     mask-image: var(--atc-card-background-mask);
     -webkit-mask-image: var(--atc-card-background-mask);
 
-    border-top-right-radius: var(--atc-card-border-radius);
-    border-top-left-radius: var(--atc-card-border-radius);
+    border-radius: var(--atc-card-border-radius);
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-
-    // + .container .name-area {
-    //   text-shadow: rgb(18 22 23 / 90%) 1px 1px 5px;
-    // }
-  }
-  @media screen and (max-width: 800px) {
-    --atc-card-spacing: 3vw;
   }
 
   .container {
     display: grid;
-    flex: 1;
-    grid-template-columns: 50% 50%;
-    grid-template-rows: 50% 50%;
+    grid-template-columns: min-content calc(100% - calc(var(--atc-icon-size) + 2 * var(--atc-card-spacing)));
     grid-template-areas:
-      'icon-area additional-state-icon-area'
-      'name-area name-area';
+    'icon-area name-area';
     width: 100%;
     height: 100%;
 
     .icon-area {
-      padding-top: var(--atc-card-spacing);
-      padding-right: calc(var(--atc-card-spacing) / 2);
-      padding-bottom: calc(var(--atc-card-spacing) / 2);
-      padding-left: var(--atc-card-spacing);
       grid-area: icon-area;
-      --mdc-icon-size: 100%;
+      display: flex;
+      align-items: center;
+      padding-right: var(--atc-card-spacing);
+      padding-left: var(--atc-card-spacing);
       .icon-wrapper {
-        border-radius: 100%;
-        padding: 20%;
-        width: 100%;
-        height: 100%;
+        padding: 8px;
+        width: var(--atc-icon-size);
+        height: var(--atc-icon-size);
+        aspect-ratio: 1;
 
         position: relative;
         display: flex;
         align-items: center;
-        background: var(--atc-icon-background);
+        
         border: var(--atc-icon-border);
         justify-content: center;
-        background-size: cover; // if it's an image
-        transition: background-color 180ms ease-in-out 0s, border 180ms ease-in-out 0s;
+        
+        // background color with opacity
+        &:before {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          border-radius: 100%;
+          background: var(--atc-icon-background);
+          background-size: cover; // if it's an image
+          transition: background-color var(--atc-card-transition);
+          
+          opacity: var(--atc-icon-background-opacity);
+        }
         .icon {
-          transition: color 180ms ease-in-out 0s;
+          transition: color var(--atc-card-transition);
           color: var(--atc-icon-color);
         }
       }
     }
 
-    .state-icon-area {
-      padding-top: var(--atc-card-spacing);
-      padding-right: var(--atc-card-spacing);
-      padding-bottom: calc(var(--atc-card-spacing) / 2);
-      padding-left: calc(var(--atc-card-spacing) / 2);
-      grid-area: additional-state-icon-area;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    // .state-icon-area {
+    //   padding-top: var(--atc-card-spacing);
+    //   padding-right: var(--atc-card-spacing);
+    //   padding-bottom: calc(var(--atc-card-spacing) / 2);
+    //   padding-left: calc(var(--atc-card-spacing) / 2);
+    //   grid-area: additional-state-icon-area;
+    //   display: flex;
+    //   align-items: center;
+    //   justify-content: center;
+    // }
 
     .name-area {
       grid-area: name-area;
-      color: var(--atc-text-color);
       padding-right: var(--atc-card-spacing);
-      padding-bottom: var(--atc-card-spacing);
-      padding-left: var(--atc-card-spacing);
+      position: relative;
+      color: var(--atc-text-color);
+      
       display: flex;
       flex-direction: column;
-      justify-content: end;
+      justify-content: center;
       .entity-state {
         font-size: var(--atc-state-font-size);
         font-weight: var(--atc-state-font-weight);
@@ -177,58 +172,93 @@ ha-card {
     }
   }
 
+  &.entity-picture-as-icon {
+    --atc-icon-background-opacity: 1;
+  }
+
   /*** 
-  * Available State 
+  * Tall Layout
   ***/
-  &.isUnavailable {
-    background: var(--atc-card-background-unavailable);
+  &.is-tall-layout {
     .container {
-      .name-area {
-        color: var(--atc-text-color-unavailable);
-      }
+      grid-template-columns: 50% 50%;
+      grid-template-rows: min-content auto min-content;
+      grid-template-areas:
+        'icon-area .'
+        '. .'
+        'name-area name-area';
+      
+      overflow: hidden; // to hide the box shadow of the name area
+
       .icon-area {
-        .icon-wrapper {
-          background: var(--atc-icon-background-unavailable);
-          .icon {
-            color: var(--atc-icon-color-unavailable);
-          }
-        }
+        padding-top: var(--atc-card-spacing);
+        padding-bottom: calc(var(--atc-card-spacing) / 2);
+      }
+      .name-area {
+        padding-bottom: var(--atc-card-spacing);
+        padding-top: calc(var(--atc-card-spacing) / 2);
+        padding-left: var(--atc-card-spacing);
+
+        // background: var(--atc-card-background);
+        // border-bottom-right-radius: var(--atc-card-border-radius);
+        // border-bottom-left-radius: var(--atc-card-border-radius);
+
+        // Background image shadow
+        // &:before {
+        //   content: '';
+        //   position: absolute;
+        //   top: 0;
+        //   left: -20px;
+        //   width: calc(100% + 2 * 20px);
+        //   height: 35px;
+        //   box-shadow: 0px -20px 10px var(--atc-card-background)
+        // }
       }
     }
   }
 
   /*** 
-  * Clicked State 
+  * Tall & Wide Layout
   ***/
-
-  &.isClicked {
-    animation: var(--atc-theme-click-animation);
+  &.is-tall-layout.is-wide-layout {
+    .container {
+      grid-template-areas:
+      'icon-area .'
+      '. .'
+      'name-area name-area';
+      grid-template-columns: 50% 50%;
+      grid-template-rows: min-content auto min-content;
+    }
   }
 
   /*** 
   * Active State 
   ***/
 
-  &.isActive {
-    background: var(--atc-card-background-active);
-    background-size: cover; // if it's an image
-    background-position: center; // if it's an image
+  &.is-active {
+    --atc-card-background: var(--atc-card-background-active);
+    --atc-icon-border: var(--atc-icon-border-active);
+    --atc-icon-background: var(--atc-icon-background-active);
+    --atc-icon-color: var(--atc-icon-color-active);
+    --atc-text-color: var(--atc-text-color-active);
+  }
 
-    .container {
-      .icon-area .icon-wrapper {
-        border: var(--atc-icon-border-active);
-        background: var(--atc-icon-background-active);
-        background-size: cover; // if it's an image
-        background-position: center; // if it's an image
-        .icon {
-          color: var(--atc-icon-color-active);
-        }
-      }
+  /*** 
+  * Available State 
+  ***/
+  &.is-unavailable {
+    --atc-card-background: var(--atc-card-background-unavailable);
+    --atc-text-color: var(--atc-text-color-unavailable);
+    --atc-icon-background: var(--atc-icon-background-unavailable);
+    --atc-icon-color: var(--atc-icon-color-unavailable);
+  }
 
-      .name-area {
-        color: var(--atc-text-color-active);
-      }
-    }
+  /*** 
+  * Clicked State 
+  ***/
+
+  &.is-clicked {
+    animation: var(--atc-theme-click-animation);
   }
 }
 

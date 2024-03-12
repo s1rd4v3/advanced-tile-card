@@ -1,19 +1,19 @@
-import typescript from 'rollup-plugin-typescript2';
-import commonjs from 'rollup-plugin-commonjs';
-import nodeResolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
-import { terser } from 'rollup-plugin-terser';
-import serve from 'rollup-plugin-serve';
 import json from '@rollup/plugin-json';
-import css from "rollup-plugin-import-css";
-import scss from 'rollup-plugin-scss'
+import babel from 'rollup-plugin-babel';
+import commonjs from 'rollup-plugin-commonjs';
+import css from 'rollup-plugin-import-css';
+import nodeResolve from 'rollup-plugin-node-resolve';
+import scss from 'rollup-plugin-scss';
+import serve from 'rollup-plugin-serve';
+import { terser } from 'rollup-plugin-terser';
+import typescript from 'rollup-plugin-typescript2';
 
 const dev = process.env.ROLLUP_WATCH;
 
 const serveopts = {
   contentBase: ['./dist'],
   host: '0.0.0.0',
-  port: 5000,
+  port: 5001,
   allowCrossOrigin: true,
   headers: {
     'Access-Control-Allow-Origin': '*',

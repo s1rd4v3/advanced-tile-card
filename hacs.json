@@ -1,5 +1,5 @@
 {
     "name": "Advanced Tile Card",
-    "render_readme": false,
+    "render_readme": true,
     "filename": "advanced-tile-card.js"
 }
