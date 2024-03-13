@@ -14,8 +14,9 @@ News:
 - Use in a "Sections" type view so you can control the columns and rows. (No effect on other view types)
 
 **Take a look at me matching theme for this custom card at [gugg-iis-theme](https://github.com/s1rd4v3/gugg-iis-theme)**
+![CleanShot 2024-03-13 at 20 53 44@2x](https://github.com/s1rd4v3/advanced-tile-card/assets/914248/2b399ee7-911d-484d-9ca7-6f07eaaef8bc)
 
-[TBD]
+
 
 ## Features
 
