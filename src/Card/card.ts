@@ -70,16 +70,12 @@ export default class Card extends LitElement implements LovelaceCard {
     return parseInt(this.config.card_rows, 10);
   }
 
-  public getGridSize() {
-    return [this.config.card_columns, this.config.card_rows];
+  public getLayoutOptions() {
+    return {
+      grid_columns: this.config.card_columns,
+      grid_rows: this.config.card_rows,
+    };
   }
-  // TODO: Preparation for after v2024.3.0
-  // public getLayoutOptions() {
-  //   return {
-  //     grid_columns: this.config.card_columns,
-  //     grid_rows: this.config.card_rows,
-  //   };
-  // }
 
   // https://lit.dev/docs/components/lifecycle/#reactive-update-cycle-performing
   protected shouldUpdate(changedProps: PropertyValues): boolean {
