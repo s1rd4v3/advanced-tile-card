@@ -33,6 +33,14 @@ const rawSchema = (icon: string, domain: string, config: AdvancedTileCardConfig,
     label: hass.localize('ui.dialogs.helper_settings.generic.name'),
     type: 'string',
   }),
+  densed_layout: () => ({
+    condition: () => true,
+    name: 'densed_layout',
+    label: `Densed layout?`,
+    selector: {
+      boolean: {},
+    },
+  }),
   icon: () => ({
     condition: () => true,
     name: 'icon',
@@ -42,18 +50,6 @@ const rawSchema = (icon: string, domain: string, config: AdvancedTileCardConfig,
         placeholder: icon,
       },
     },
-  }),
-  card_rows: () => ({
-    condition: () => true,
-    name: 'card_rows',
-    label: 'Rows',
-    selector: { number: { min: 1, max: 4, mode: 'slider' } },
-  }),
-  card_columns: () => ({
-    condition: () => true,
-    name: 'card_columns',
-    label: 'Columns',
-    selector: { number: { min: 1, max: 4, mode: 'slider' } },
   }),
   icon_tap_action: () => ({
     condition: () => true,
