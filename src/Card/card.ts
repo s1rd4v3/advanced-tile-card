@@ -100,8 +100,7 @@ export default class Card extends LitElement implements LovelaceCard {
     const showStateString = this.config.show_state_string || false;
     const isActive = isEntityActive(this.entity);
     const isUnavailable = this.entity === undefined || this.entity.state === 'unavailable';
-    const isTallLayout = parseInt(this.config.card_rows, 10) > 1;
-    const isWideLayout = parseInt(this.config.card_columns, 10) > 1;
+    const isDensedLayout = !!this.config.densed_layout;
 
     const { domainClasses, domainStyles, domainStateString } = computeDomainOptions(
       this.entity,
@@ -117,8 +116,7 @@ export default class Card extends LitElement implements LovelaceCard {
       'is-clicked': this.isClicked,
       'is-active': isActive,
       'is-unavailable': isUnavailable,
-      'is-tall-layout': isTallLayout,
-      'is-wide-layout': isWideLayout,
+      'is-densed-layout': isDensedLayout,
       'entity-picture-as-icon': entityUsesEntityPictureAsIcon,
     };
 
@@ -153,7 +151,7 @@ export default class Card extends LitElement implements LovelaceCard {
             </div>
           </div>
 
-          <!-- ${isTallLayout ? html`<span class="state-icon-area"></span>` : ''} -->
+          <!-- ${isDensedLayout ? '' : html`<span class="state-icon-area"></span>`} -->
 
           <div class="name-area">
             <span class="entity-name ellipsis"> ${this.config.name || this.entity.attributes.friendly_name} </span>

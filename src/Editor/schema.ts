@@ -11,8 +11,7 @@ const schema = (icon: string, domain: string, config: AdvancedTileCardConfig, ha
       schemaObject.grid([
         schemaObject.name(),
         schemaObject.icon(),
-        schemaObject.card_rows(),
-        schemaObject.card_columns(),
+        schemaObject.densed_layout(),
       ]),
       schemaObject.use_entity_picture_as_icon(),
       schemaObject.use_entity_picture_as_background(),
