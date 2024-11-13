@@ -187,13 +187,13 @@ ha-card {
         'icon-area name-area';
       
       .icon-area {
-        padding-top: inherit;
-        padding-bottom: inherit;
+        padding-top: calc(var(--atc-card-spacing)/2);
+        padding-bottom: calc(var(--atc-card-spacing)/2);
       }
       .name-area {
-        padding-bottom: inherit;
-        padding-top: inherit;
-        padding-left: inherit;
+        padding-bottom: calc(var(--atc-card-spacing)/2);
+        padding-top: calc(var(--atc-card-spacing)/2);
+        padding-left: 0;
       }
     }
   }
