@@ -1,11 +1,11 @@
+import babel from '@rollup/plugin-babel';
 import json from '@rollup/plugin-json';
-import babel from 'rollup-plugin-babel';
+import terser from '@rollup/plugin-terser';
 import commonjs from 'rollup-plugin-commonjs';
 import css from 'rollup-plugin-import-css';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import scss from 'rollup-plugin-scss';
 import serve from 'rollup-plugin-serve';
-import { terser } from 'rollup-plugin-terser';
 import typescript from 'rollup-plugin-typescript2';
 
 const dev = process.env.ROLLUP_WATCH;
@@ -31,6 +31,7 @@ const plugins = [
   css(),
   babel({
     exclude: 'node_modules/**',
+    babelHelpers: 'bundled',
   }),
   dev && serve(serveopts),
   !dev && terser(),
