@@ -20,4 +20,6 @@ export const STATES_ON = [
   'closed',
   'locked',
   'playing',
+  'cleaning',
+  'mowing'
 ];

@@ -1,10 +1,10 @@
+import babel from '@rollup/plugin-babel';
 import json from '@rollup/plugin-json';
-import babel from 'rollup-plugin-babel';
+import terser from '@rollup/plugin-terser';
 import css from 'rollup-plugin-import-css';
 import resolve from 'rollup-plugin-node-resolve';
 import scss from 'rollup-plugin-scss';
 import serve from 'rollup-plugin-serve';
-import { terser } from 'rollup-plugin-terser';
 import typescript from 'rollup-plugin-typescript2';
 
 export default {
@@ -24,6 +24,7 @@ export default {
     css(),
     babel({
       exclude: 'node_modules/**',
+      babelHelpers: 'bundled',
     }),
     terser(),
     serve({
