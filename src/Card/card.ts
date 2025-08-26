@@ -20,7 +20,7 @@ import { actionHandler } from '../action-handler-directive';
 import { computeDomainOptions } from '../computeDomainOptions';
 import { CARD_ID, VISUAL_EDITOR_ID } from '../const';
 import { isEntityActive } from '../helpers/isEntityActive';
-import { localize } from '../localize/localize';
+import { localLocalize } from '../localize/localLocalize';
 import type { AdvancedTileCardConfig } from '../types';
 import cardStyles from './styles.scss';
 
@@ -54,7 +54,7 @@ export default class Card extends LitElement implements LovelaceCard {
   // https://lit.dev/docs/components/properties/#accessors-custom
   public setConfig(config: AdvancedTileCardConfig): void {
     if (!config) {
-      throw new Error(localize('common.invalid_configuration'));
+      throw new Error(localLocalize('common.invalid_configuration'));
     }
 
     if (config.test_gui) {
@@ -89,7 +89,7 @@ export default class Card extends LitElement implements LovelaceCard {
   // https://lit.dev/docs/components/rendering/
   protected render(): TemplateResult | void {
     if (!this.config.entity) {
-      return this._showWarning(localize('common.missing_entity'));
+      return this._showWarning(localLocalize('common.missing_entity'));
     }
 
     // Set entity properties
@@ -98,6 +98,9 @@ export default class Card extends LitElement implements LovelaceCard {
     const entityUsesEntityPictureAsIcon = this.config.use_entity_picture_as_icon || false;
     const entityUsesEntityPictureAsBackground = this.config.use_entity_picture_as_background || false;
     const showStateString = this.config.show_state_string || false;
+    const showAdditionalStateIcon = this.config.show_additional_state_icon || false;
+    const additionalStateEntityIcon = this.config.additional_state_icon_entity_icon || this.config.additional_state_icon_entity && stateIcon(this.hass?.states[this.config.additional_state_icon_entity]);
+    const additionalStateEntityUsesEntityPictureAsIcon = this.config.additional_state_icon_uses_entity_picture || false;
     const isActive = isEntityActive(this.entity);
     const isUnavailable = this.entity === undefined || this.entity.state === 'unavailable';
     const isDensedLayout = !!this.config.densed_layout;
@@ -151,7 +154,19 @@ export default class Card extends LitElement implements LovelaceCard {
             </div>
           </div>
 
-          <!-- ${isDensedLayout ? '' : html`<span class="state-icon-area"></span>`} -->
+          ${isDensedLayout || !showAdditionalStateIcon ? '' : html`
+            <span
+              class="additional-state-icon-area" role="button"
+              @click=${this._handleAdditionalIconTap}
+              @touchend=${this._handleAdditionalIconTap}
+              @touchmove=${this._handleIconTouchMove}>
+              <div class="icon-wrapper">
+              ${!additionalStateEntityUsesEntityPictureAsIcon
+                ? html` <ha-state-icon class="icon" .icon=${additionalStateEntityIcon}> </ha-state-icon> `
+                : ''}
+              </div>
+            </span>
+          `}
 
           <div class="name-area">
             <span class="entity-name ellipsis"> ${this.config.name || this.entity.attributes.friendly_name} </span>
@@ -187,6 +202,25 @@ export default class Card extends LitElement implements LovelaceCard {
     const config = {
       entity: this.config.entity,
       tap_action: this.config.icon_tap_action,
+    };
+
+    handleAction(this, this.hass, config, 'tap');
+  }
+
+  private _handleAdditionalIconTap(ev: CustomEvent) {
+    if (this.isDragging) {
+      this.isDragging = false;
+      return;
+    }
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    this.toggleClickClass();
+    forwardHaptic('success');
+
+    const config = {
+      entity: this.config.additional_state_icon_entity,
+      tap_action: this.config.additional_state_icon_entity_tap_action,
     };
 
     handleAction(this, this.hass, config, 'tap');

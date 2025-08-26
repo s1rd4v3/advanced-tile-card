@@ -4,7 +4,7 @@ import rawSchema from './rawSchema';
 
 const schema = (icon: string, domain: string, config: AdvancedTileCardConfig, hass: HomeAssistant) => {
   const schemaObject = rawSchema(icon, domain, config, hass);
-
+  
   const schemaStructure = [
     schemaObject.entity(),
     schemaObject.expandable_appearance([
@@ -18,10 +18,26 @@ const schema = (icon: string, domain: string, config: AdvancedTileCardConfig, ha
     ]),
     schemaObject.expandable_state([
       schemaObject.show_state_string(),
-      schemaObject.grid([schemaObject.conditional_state(), schemaObject.if_state()]),
-      schemaObject.grid([schemaObject.use_attribute_as_state(), schemaObject.attribute_to_show()]),
+      schemaObject.grid([
+        schemaObject.conditional_state(),
+        schemaObject.if_state()
+      ]),
+      schemaObject.grid([
+        schemaObject.use_attribute_as_state(),
+        schemaObject.attribute_to_show()
+      ]),
     ]),
-    schemaObject.expandable_actions([schemaObject.tap_action(), schemaObject.icon_tap_action()]),
+    schemaObject.expandable_additional_state_icon_entity([
+      schemaObject.show_additional_state_icon(),
+      schemaObject.additional_state_icon_entity(),
+      schemaObject.additional_state_icon_entity_icon(),
+      schemaObject.additional_state_icon_uses_entity_picture(),
+    ]),
+    schemaObject.expandable_actions([
+      schemaObject.tap_action(),
+      schemaObject.icon_tap_action(),
+      schemaObject.additional_state_icon_entity_tap_action(),
+    ]),
   ];
 
   return schemaStructure;

@@ -1,7 +1,7 @@
-import { mdiGestureTap, mdiPalette, mdiStateMachine } from '@mdi/js';
-import { HomeAssistant } from 'custom-card-helpers';
+import { mdiGestureTap, mdiPlusBoxMultipleOutline, mdiStateMachine, mdiTextShort } from '@mdi/js';
+import { HomeAssistant, computeDomain } from 'custom-card-helpers';
+import { localLocalize } from '../localize/localLocalize';
 import { AdvancedTileCardConfig } from '../types';
-
 type SchemaObjectType = {
   condition: () => boolean;
   name: string;
@@ -18,7 +18,9 @@ export type SchemaType = {
   [key: string]: (childs?: SchemaObjectType[]) => SchemaObjectType;
 };
 
-const rawSchema = (icon: string, domain: string, config: AdvancedTileCardConfig, hass: HomeAssistant): SchemaType => ({
+const rawSchema = (icon: string, domain: string, config: AdvancedTileCardConfig, hass: HomeAssistant): SchemaType => {
+  const additionalStateEntityDomain = computeDomain(config.additional_state_icon_entity || '');
+  return {
   entity: () => ({
     condition: () => true,
     name: 'entity',
@@ -55,6 +57,48 @@ const rawSchema = (icon: string, domain: string, config: AdvancedTileCardConfig,
     condition: () => true,
     name: 'icon_tap_action',
     label: hass.localize('ui.panel.lovelace.editor.card.tile.icon_tap_action'),
+    selector: {
+      'ui-action': {},
+    },
+  }),
+  show_additional_state_icon: () => ({
+    condition: () => true,
+    name: 'show_additional_state_icon',
+    label: localLocalize("editor.show_additional_state_icon"),
+    selector: {
+      boolean: {},
+    },
+  }),
+  additional_state_icon_entity: () => ({
+    condition: () => !!config.show_additional_state_icon,
+    name: 'additional_state_icon_entity',
+    label: hass.localize('ui.components.entity.entity-picker.entity'),
+    selector: {
+      entity: {},
+    },
+  }),
+  additional_state_icon_entity_icon: () => ({
+    condition: () => !!config.show_additional_state_icon,
+    name: 'additional_state_icon_entity_icon',
+    label: hass.localize('ui.dialogs.helper_settings.generic.icon'),
+    selector: {
+      icon: {},
+    },
+  }),
+  additional_state_icon_uses_entity_picture: () => ({
+    condition: () => (additionalStateEntityDomain === 'person' || additionalStateEntityDomain === 'camera' || additionalStateEntityDomain === 'media_player') && !!config.show_additional_state_icon,
+    name: 'additional_state_icon_uses_entity_picture',
+    label: `${hass.localize('ui.dialogs.helper_settings.generic.icon')}: ${hass.localize(
+      'ui.panel.lovelace.editor.card.tile.show_entity_picture',
+    )}`,
+    selector: {
+      boolean: {},
+    },
+  }),
+  additional_state_icon_entity_tap_action: () => ({
+    condition: () => !!config.show_additional_state_icon,
+    name: 'additional_state_icon_entity_tap_action',
+    label: localLocalize('editor.tab_action_additional_state_icon'),
     selector: {
       'ui-action': {},
     },
@@ -139,15 +183,15 @@ const rawSchema = (icon: string, domain: string, config: AdvancedTileCardConfig,
     condition: () => !!childs?.length,
     name: '',
     type: 'expandable',
-    iconPath: mdiPalette,
-    title: hass.localize('ui.panel.lovelace.editor.card.tile.appearance'),
+    iconPath: mdiTextShort,
+    title: hass.localize('ui.panel.lovelace.editor.card.generic.content'),
     schema: childs,
   }),
   expandable_actions: (childs) => ({
     condition: () => !!childs?.length,
     name: '',
     type: 'expandable',
-    title: hass.localize('ui.panel.lovelace.editor.card.tile.actions'),
+    title: hass.localize('ui.panel.lovelace.editor.card.generic.interactions'),
     iconPath: mdiGestureTap,
     schema: childs,
   }),
@@ -159,7 +203,15 @@ const rawSchema = (icon: string, domain: string, config: AdvancedTileCardConfig,
     iconPath: mdiStateMachine,
     schema: childs,
   }),
-});
+  expandable_additional_state_icon_entity: (childs) => ({
+    condition: () => true,
+    name: '',
+    type: 'expandable',
+    title: localLocalize("editor.additional_state_icon_entity"),
+    iconPath: mdiPlusBoxMultipleOutline,
+    schema: childs,
+  }),
+}};
 
 const schema = (icon: string, domain: string, config: AdvancedTileCardConfig, hass: HomeAssistant) => {
   const schemaObject = rawSchema(icon, domain, config, hass);
