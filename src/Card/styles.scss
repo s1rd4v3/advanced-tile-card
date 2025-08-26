@@ -6,7 +6,7 @@ ha-card {
   /*** 
   * Variables START
   ***/
-
+  
   // Defaults defined by HA variables
   --atc-default-card-background: var(--ha-card-background, var(--card-background-color, white));
   --atc-default-card-border-radius: var(--ha-card-border-radius, 12px);
@@ -36,6 +36,12 @@ ha-card {
   --atc-icon-background: var(--atc-theme-icon-background, var(--atc-default-icon-background));
   --atc-icon-background-active: var(--atc-theme-icon-background-active, var(--atc-default-icon-background-active));
   --atc-icon-background-unavailable: var(--atc-theme-icon-background-unavailable,var(--atc-default-card-background));
+  
+  --atc-additional-state-icon-color: var(--atc-text-color);
+  --atc-additional-state-icon-color-active: var(--atc-text-color-active);
+  --atc-additional-state-icon-background: transparent;
+  --atc-additional-state-icon-background-active: transparent;
+
   --atc-icon-background-opacity: var(--atc-theme-icon-background-opacity, var(--atc-default-icon-background-opacity));
 
   // Font sizes
@@ -64,6 +70,9 @@ ha-card {
   border-radius: var(--atc-card-border-radius);
 
   cursor: pointer;
+  &:hover {
+    filter: brightness(0.90);
+  }
 
   /*** 
   * Elements
@@ -93,7 +102,7 @@ ha-card {
     grid-template-columns: 50% 50%;
     grid-template-rows: min-content auto min-content;
     grid-template-areas:
-      'icon-area .'
+      'icon-area additional-state-icon-area'
       '. .'
       'name-area name-area';
     
@@ -102,7 +111,8 @@ ha-card {
 
     overflow: hidden; // to hide the box shadow of the name area
 
-    .icon-area {
+    .icon-area,
+    .additional-state-icon-area {
       grid-area: icon-area;
       display: flex;
       align-items: center;
@@ -170,6 +180,21 @@ ha-card {
         max-width: 100%;
       }
     }
+
+    .additional-state-icon-area {
+      grid-area: additional-state-icon-area;
+      justify-content: flex-end;
+      opacity: 0.8;
+      .icon-wrapper {
+        &:before {
+          background: var(--atc-additional-state-icon-background, var(--atc-default-icon-background));
+          background-size: cover;
+        }
+        .icon {
+          color: var(--atc-additional-state-icon-color);
+        }
+      }
+    }
   }
 
   &.entity-picture-as-icon {
@@ -208,6 +233,7 @@ ha-card {
     --atc-icon-background: var(--atc-icon-background-active);
     --atc-icon-color: var(--atc-icon-color-active);
     --atc-text-color: var(--atc-text-color-active);
+    --atc-additional-state-icon-color: var(--atc-additional-state-icon-color-active);
   }
 
   /*** 

@@ -40,7 +40,6 @@ After you've installed the card, you will find it in the card selection while ed
 
 ## Next up
 
-- [ ] Possibility to add additional state bubble to the top right similar to [hass-config](https://github.com/matt8707/hass-config)?
-- [ ] Square cards
-- [ ] CSS optimisations
+- [x] Possibility to add additional state bubble to the top right similar to [hass-config](https://github.com/matt8707/hass-config)?
+- [x] CSS optimisations
 - ...

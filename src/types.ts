@@ -19,6 +19,10 @@ export interface AdvancedTileCardConfig extends LovelaceCardConfig {
   icon_tap_action: ActionConfig;
   icon?: string;
   use_attribute_as_state?: boolean;
+  show_additional_state_icon?: boolean;
+  additional_state_icon_entity?: string;
+  additional_state_icon_entity_icon?: string;
+  additional_state_icon_entity_tap_action?: ActionConfig;
 }
 
 export type DomainOptionsType = {

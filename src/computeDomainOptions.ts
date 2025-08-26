@@ -1,4 +1,4 @@
-import { HomeAssistant } from 'custom-card-helpers';
+import { computeDomain, HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { computeStateString } from './helpers/computeStateString';
 import { createDomainOptions } from './helpers/createDomainOptions';
@@ -7,14 +7,38 @@ import { getEntityDomain } from './helpers/getEntityDomain';
 import { isEntityActive } from './helpers/isEntityActive';
 import { AdvancedTileCardConfig, DomainOptionsType } from './types';
 
+const addEntityPictureAsIcon = (entity: HassEntity, domainStyles: Record<string, string>, variablename: string) => {
+  if (entity.attributes.entity_picture) {
+    domainStyles[`--${variablename}`] = `url(${entity.attributes.entity_picture})`;
+    domainStyles[`--${variablename}-active`] = `url(${entity.attributes.entity_picture})`;
+  }
+};
+
 export const computeDomainOptions = (
   entity: HassEntity,
   hass: HomeAssistant,
   config: AdvancedTileCardConfig,
 ): DomainOptionsType => {
   const domain = getEntityDomain(entity);
-
   const domainStyles = {};
+
+  if (config.show_additional_state_icon && config.additional_state_icon_entity) {
+    const additionalStateEntityDomain = computeDomain(config.additional_state_icon_entity || '');
+    const additionalStateEntity = hass.states[config.additional_state_icon_entity];
+
+    switch (additionalStateEntityDomain) {
+      case 'person':
+      case 'media_player':
+      case 'camera':
+        if (config.additional_state_icon_uses_entity_picture) {
+          addEntityPictureAsIcon(additionalStateEntity, domainStyles, 'atc-additional-state-icon-background');
+        }
+        break;
+        
+      default:
+        break;
+    }
+  }
 
   switch (domain) {
     case 'light':
@@ -31,9 +55,9 @@ export const computeDomainOptions = (
       );
 
     case 'person':
-      if (config.use_entity_picture_as_icon && entity.attributes.entity_picture) {
-        domainStyles['--atc-icon-background'] = `url(${entity.attributes.entity_picture})`;
-        domainStyles['--atc-icon-background-active'] = `url(${entity.attributes.entity_picture})`;
+    case 'camera':
+      if (config.use_entity_picture_as_icon) {
+        addEntityPictureAsIcon(entity, domainStyles, 'atc-icon-background');
       }
 
       return createDomainOptions(
@@ -48,16 +72,13 @@ export const computeDomainOptions = (
         { entity, hass, config },
         {
           domainStateString: entity.state !== 'locked' ? computeStateString(entity, hass) : false,
+          domainStyles,
         },
       );
 
-    case 'alarm_control_panel':
-      return createDomainOptions({ entity, hass, config });
-
     case 'media_player':
-      if (config.use_entity_picture_as_icon && entity.attributes.entity_picture) {
-        domainStyles['--atc-icon-background'] = `url(${entity.attributes.entity_picture})`;
-        domainStyles['--atc-icon-background-active'] = `url(${entity.attributes.entity_picture})`;
+      if (config.use_entity_picture_as_icon) {
+        addEntityPictureAsIcon(entity, domainStyles, 'atc-icon-background');
       }
       return createDomainOptions(
         { entity, hass, config },
@@ -65,19 +86,10 @@ export const computeDomainOptions = (
           domainStyles,
           domainStateString:
             entity.state === 'playing'
-              ? entity.attributes.media_title
-                ? entity.attributes.media_title
-                : computeStateString(entity, hass)
+              ? computeStateString(entity, hass)
               : false,
         },
       );
-
-    case 'camera':
-      if (config.use_entity_picture_as_icon && entity.attributes.entity_picture) {
-        domainStyles['--atc-icon-background'] = `url(${entity.attributes.entity_picture})`;
-        domainStyles['--atc-icon-background-active'] = `url(${entity.attributes.entity_picture})`;
-      }
-      return createDomainOptions({ entity, hass, config }, { domainStyles });
 
     case 'sensor':
       return createDomainOptions(
@@ -86,21 +98,21 @@ export const computeDomainOptions = (
           domainStateString: entity.attributes.unit_of_measurement
             ? `${entity.state} ${entity.attributes.unit_of_measurement}`
             : false,
+          domainStyles,
         },
       );
-    case 'scene':
-      return createDomainOptions({ entity, hass, config });
     case 'binary_sensor':
       return createDomainOptions(
         { entity, hass, config },
         {
           domainStateString: entity.state === 'on' ? computeStateString(entity, hass) : false,
+          domainStyles,
         },
       );
-    case 'sun':
-      return createDomainOptions({ entity, hass, config });
 
     default:
-      return createDomainOptions({ entity, hass, config });
+      return createDomainOptions({ entity, hass, config }, {
+          domainStyles,
+        },);
   }
 };
